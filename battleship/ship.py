@@ -18,7 +18,7 @@ class Ship:
 
     def calculate_positions(self) -> Iterable[Tuple[int, int]]:
         if self.orientation == "v":
-            return ((self.x, self.y+i) for i in range(self.length))
+            return ((self.x, self.y + i) for i in range(self.length))
         if self.orientation == "h":
-            return ((self.x+i, self.y) for i in range(self.length))
+            return ((self.x + i, self.y) for i in range(self.length))
         raise RuntimeError(f"invalid orientation {self.orientation}")

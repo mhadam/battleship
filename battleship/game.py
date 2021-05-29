@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Iterable, MutableMapping
+from typing import Optional, Tuple, Iterable, MutableMapping, Sequence
 
 from battleship.board import Board, DamageRecord
 
@@ -27,6 +27,26 @@ class Player:
     def damage_record(self) -> DamageRecord:
         return self.__damage_record
 
+    @property
+    def text(self) -> Iterable[Sequence[str]]:
+        grid: MutableMapping[Tuple[int, int], str] = {}
+        for position, _ in self.board.positions.items():
+            grid[position] = "s"
+        for ship in self.board.ships:
+            floating = self.damage_record.floating_positions_by_ship[ship]
+            hit = ship.positions.difference(floating)
+            for position in hit:
+                grid[position] = "h"
+        x_dim, y_dim = self.board.dimensions
+        for y in range(y_dim):
+            line = []
+            for x in range(x_dim):
+                try:
+                    line.append(grid[x, y])
+                except KeyError:
+                    line.append(".")
+            yield line
+
 
 class Game:
     def __init__(self, p1: Player, p2: Player, dimensions: Tuple[int, int]):
@@ -49,27 +69,9 @@ class Game:
             return 1
 
     def print_game(self):
-        grid: MutableMapping[Tuple[int, int], str] = {}
-        for position, _ in self.p1.board.positions.items():
-            grid[position] = "1"
-        for position, _ in self.p2.board.positions.items():
-            grid[position] = "2"
-        for ship in self.p1.board.ships:
-            floating = self.p1.damage_record.floating_positions_by_ship[ship]
-            hit = ship.positions.difference(floating)
-            for position in hit:
-                grid[position] = "h"
-        for ship in self.p2.board.ships:
-            floating = self.p2.damage_record.floating_positions_by_ship[ship]
-            hit = ship.positions.difference(floating)
-            for position in hit:
-                grid[position] = "h"
-        x_dim, y_dim = self.dimensions
-        for y in range(y_dim):
-            for x in range(x_dim):
-                try:
-                    print(grid[x, y], end="")
-                except KeyError:
-                    print(".", end="")
-            if y < y_dim - 1:
-                print()
+        print("Player 1:")
+        for line in self.p1.text:
+            print("".join(line))
+        print("Player 2:")
+        for line in self.p2.text:
+            print("".join(line))

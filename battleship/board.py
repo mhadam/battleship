@@ -6,8 +6,7 @@ from battleship.ship import Ship
 
 @dataclass
 class Board:
-    x: int
-    y: int
+    dimensions: Tuple[int, int]
     ships: Set[Ship]
     positions: Mapping[Tuple[int, int], Ship] = field(init=False)
 
@@ -15,7 +14,7 @@ class Board:
         self.positions = self.calculate_positions()
 
     def validate_position(self, x: int, y: int):
-        if x >= self.x or y >= self.y:
+        if x >= self.dimensions[0] or y >= self.dimensions[1]:
             raise RuntimeError("exceeds size")
 
     def calculate_positions(self) -> Mapping[Tuple[int, int], Ship]:
@@ -44,6 +43,7 @@ class DamageRecord:
             position = (x, y)
             ship = self.ship_by_floating_position[position]
             self.floating_positions_by_ship[ship].remove(position)
+            self.ship_by_floating_position.pop(position)
             return ship
         except KeyError:
             pass

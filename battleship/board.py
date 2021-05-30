@@ -16,6 +16,8 @@ class Board:
     def validate_position(self, x: int, y: int):
         if x >= self.dimensions[0] or y >= self.dimensions[1]:
             raise RuntimeError("exceeds size")
+        if x < 0 or y < 0:
+            raise RuntimeError("cannot be a negative coordinate")
 
     def calculate_positions(self) -> Mapping[Tuple[int, int], Ship]:
         positions = {}
@@ -24,7 +26,7 @@ class Board:
                 self.validate_position(*position)
                 if position in positions:
                     raise RuntimeError(
-                        f"overlapping ships between {ship} and {positions.get(position)}"
+                        f"overlapping ships at {position} between {ship} and {positions.get(position)}"
                     )
                 positions[position] = ship
         return positions

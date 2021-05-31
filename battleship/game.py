@@ -68,10 +68,8 @@ class Game:
         if self.p2.is_defeated:
             return 1
 
-    def print_game(self):
-        print("Player 1:")
-        for line in self.p1.text:
-            print("".join(line))
-        print("Player 2:")
-        for line in self.p2.text:
-            print("".join(line))
+    def p1_lines(self) -> Iterable[Sequence[str]]:
+        return self.p1.text
+
+    def p2_lines(self) -> Iterable[Sequence[str]]:
+        return self.p2.text
